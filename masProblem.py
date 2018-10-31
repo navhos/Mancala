@@ -8,8 +8,6 @@
 # Attribution-NonCommercial-ShareAlike 4.0 International License.
 # See: http://creativecommons.org/licenses/by-nc-sa/4.0/deed.en
 
-from display import Displayable
-
 class Node(Displayable):
     """A node in a search tree. It has a
     name a string
@@ -22,15 +20,15 @@ class Node(Displayable):
         self.isMax = isMax
         self.value = value
         self.allchildren = children
-        
+
     def isLeaf(self):
         """returns true of this is a leaf node"""
         return self.allchildren is None
-    
+
     def children(self):
         """returns the list of all children."""
         return self.allchildren
-    
+
     def evaluate(self):
         """returns the evaluation for this node if it is a leaf"""
         return self.value
@@ -66,7 +64,7 @@ fig10_5 = Node("a",True,None, [
                     Node("o",False,None, [
                         Node("o1",True,888,None),
                         Node("o2",True,888,None)])])])])
-                        
+
 
 class Magic_sum(Node):
     def __init__(self, xmove=True, last_move=None,
@@ -125,11 +123,10 @@ class Magic_sum(Node):
             return 1
         else:
             return 0
-            
+
 def sum_to_15(last,selected):
     """is true if last, toegether with two other elements of selected sum to 15.
     """
     return any(last+a+b == 15
                for a in selected if a != last
                for b in selected if b != last and b != a)
-
