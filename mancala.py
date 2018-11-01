@@ -41,20 +41,32 @@ class State():
     #     return self.allchildren
 
 class Mancala():
+    """
+    >>> mancala = Mancala()
+    >>> state1 =  State(True, [4,4,4,4,4,4,0,4,4,4,4,4,4,0])
+    >>> state2 =  State(True, [4,4,0,4,4,4,0,4,4,4,4,4,4,0])
+    >>> state3 =  State(False, [4,4,4,4,4,4,0,4,4,0,4,4,4,0])
+
+
+    >>> mancala.legal_moves(state1)
+    [0, 1, 2, 3, 4, 5]
+    >>> mancala.legal_moves(state2)
+    [0, 1, 3, 4, 5]
+    >>> mancala.legal_moves(state3)
+    [0, 1, 3, 4, 5]
+
+    >>> state1_0 = mancala.make_move(0, state1)
+    >>> state1_0.isMax
+    False
+    >>> state1_0.pos
+    [0, 5, 5, 5, 5, 4, 0, 4, 4, 4, 4, 4, 4, 0]
+    """
+    def __init__(self):
+        self.state = State(True, [4,4,4,4,4,4,0,4,4,4,4,4,4,0])
 
     def legal_moves(self, state):
         """Return a list of the allowable moves at this point. A state represents the number of stones in each pit on the board.
-        >>> state1 =  State(True, [4,4,4,4,4,4,0,4,4,4,4,4,4,0])
-        >>> state2 =  State(True, [4,4,0,4,4,4,0,4,4,4,4,4,4,0])
-        >>> state3 =  State(False, [4,4,4,4,4,4,0,4,4,0,4,4,4,0])
 
-
-        >>> legal_moves(state1)
-        [0, 1, 2, 3, 4, 5]
-        >>> legal_moves(state2)
-        [0, 1, 3, 4, 5]
-        >>> legal_moves(state3)
-        [0, 1, 3, 4, 5]
         """
         if(state.isMax):
             moves = [0, 1 , 2 , 3, 4, 5]
@@ -74,8 +86,11 @@ class Mancala():
         return result
 
     def make_move(self, move, state):
-        """Return the state that results from making a move from a state. For Mancala, a move is an integer in the range 0 to 5, inclusive."""
-        if(move in legal_moves(state)):
+        """Return the state that results from making a move from a state. For Mancala, a move is an integer in the range 0 to 5, inclusive.
+        >>>
+        """
+        mancala = Mancala()
+        if(move in mancala.legal_moves(state)):
 
             #Convert moves to appropriate positions if its the Min players turn
             if(not state.isMax):
@@ -91,15 +106,15 @@ class Mancala():
             while(step < result.pos[move]):
                 curr = (curr + 1) % 14
 
-                if((result.isMax and curr != 13) || (not(result.isMax) and curr != 6)):
-                    result.pos[cur] = result.pos[cur] + 1
+                if((result.isMax and curr != 13) or (not(result.isMax) and curr != 6)):
+                    result.pos[curr] = result.pos[curr] + 1
                     step = step + 1
 
                     #final move on mancala
-                    if((step == result.pos[move] and result.isMax and curr == 6) || (step == result.pos[move] and not(result.isMax) and curr == 13)):
+                    if((step == result.pos[move] and result.isMax and curr == 6) or (step == result.pos[move] and not(result.isMax) and curr == 13)):
                         result.isMax = result.isMax
                     #final move on empty spot for max
-                    elif((step == result.pos[move] and result.isMax and (curr in ([0,1,2,3,4,5])) and result.pos[cur] == 1) || (step == result.pos[move] and not(result.isMax) and (curr in ([7,8,9,10,11,12])) and result.pos[cur] == 1)):
+                    elif((step == result.pos[move] and result.isMax and (curr in ([0,1,2,3,4,5])) and result.pos[curr] == 1) or (step == result.pos[move] and not(result.isMax) and (curr in ([7,8,9,10,11,12])) and result.pos[curr] == 1)):
                         result.pos[cur] = result.pos[cur] + result.pos[12-curr]
                         result.isMax = not(result.isMax)
                     #normal final move
