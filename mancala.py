@@ -60,6 +60,25 @@ class Mancala():
     False
     >>> state1_0.pos
     [0, 5, 5, 5, 5, 4, 0, 4, 4, 4, 4, 4, 4, 0]
+
+    >>> state1_0 = mancala.make_move(2, state1)
+    >>> state1_0.isMax
+    True
+    >>> state1_0.pos
+    [4, 4, 0, 5, 5, 5, 1, 4, 4, 4, 4, 4, 4, 0]
+
+    >>> state3_0 = mancala.make_move(0, state3)
+    >>> state3_0.isMax
+    True
+    >>> state3_0.pos
+    [4, 4, 4, 4, 4, 4, 0, 0, 5, 1, 5, 5, 4, 0]
+
+    >>> state4 = State(True, [0,4,4,4,4,8,0,4,4,4,4,4,4,0])
+    >>> state4_5 = mancala.make_move(5, state4)
+    >>> state4_5.isMax
+    False
+    >>> state4_5.pos
+    [6, 4, 4, 4, 4, 0, 1, 5, 5, 5, 5, 5, 0, 0]
     """
     def __init__(self):
         self.state = State(True, [4,4,4,4,4,4,0,4,4,4,4,4,4,0])
@@ -102,8 +121,9 @@ class Mancala():
 
             #make a deepcopy of the state
             result = copy.deepcopy(state)
+            result.pos[move] = 0
 
-            while(step < result.pos[move]):
+            while(step < state.pos[move]):
                 curr = (curr + 1) % 14
 
                 if((result.isMax and curr != 13) or (not(result.isMax) and curr != 6)):
@@ -111,26 +131,27 @@ class Mancala():
                     step = step + 1
 
                     #final move on mancala
-                    if((step == result.pos[move] and result.isMax and curr == 6) or (step == result.pos[move] and not(result.isMax) and curr == 13)):
+                    if((step == state.pos[move] and result.isMax and curr == 6) or (step == state.pos[move] and not(result.isMax) and curr == 13)):
                         result.isMax = result.isMax
                     #final move on empty spot for max
-                    elif((step == result.pos[move] and result.isMax and (curr in ([0,1,2,3,4,5])) and result.pos[curr] == 1) or (step == result.pos[move] and not(result.isMax) and (curr in ([7,8,9,10,11,12])) and result.pos[curr] == 1)):
-                        result.pos[cur] = result.pos[cur] + result.pos[12-curr]
+                    elif((step == state.pos[move] and result.isMax and (curr in ([0,1,2,3,4,5])) and result.pos[curr] == 1) or (step == state.pos[move] and not(result.isMax) and (curr in ([7,8,9,10,11,12])) and result.pos[curr] == 1)):
+                        result.pos[curr] = result.pos[curr] + result.pos[12-curr]
+                        result.pos[12-curr] = 0
                         result.isMax = not(result.isMax)
                     #normal final move
-                    elif(step == result.pos[move]):
+                    elif(step == state.pos[move]):
                         result.isMax = not(result.isMax)
 
             #make the number of gems in the initial position = 0
-            result.pos[move] = 0
             return result
 
-# def utility(self, state, player):
-#     "Return the value of this final state to player."
-#
-# def terminal_test(self, state):
-#     "Return True if this is a final state for the game."
-#
+    # def utility(self, state, player):
+    #     "Return the value of this final state to player."
+    #
+    def terminal_test(self, state):
+        "Return True if this is a final state for the game."
+
+
     def to_move(self, state):
         """Return the player whose move it is in this state.
         returns isMax
@@ -138,9 +159,9 @@ class Mancala():
         0 is Min player
         """
         return state.isMax
-#
-# def display(self, state):
-#     "Print or otherwise display the state."
+    #
+    # def display(self, state):
+    #     "Print or otherwise display the state."
 
 if __name__ == '__main__':
     cs210_utils.cs210_mainstartup()
