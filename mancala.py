@@ -79,6 +79,24 @@ class Mancala():
     False
     >>> state4_5.pos
     [6, 4, 4, 4, 4, 0, 1, 5, 5, 5, 5, 5, 0, 0]
+
+    >>> state5 = State(False, [4,4,4,4,4,4,0,0,4,4,4,4,8,0])
+    >>> state5_5 = mancala.make_move(5, state5)
+    >>> state5_5.isMax
+    True
+    >>> state5_5.pos
+    [5, 5, 5, 5, 5, 0, 0, 6, 4, 4, 4, 4, 0, 1]
+
+    >>> state6 = State(True, [4,4,4,4,14,4,0,4,4,4,4,4,4,0])
+    >>> state6_4 = mancala.make_move(4, state6)
+    >>> state6_4.pos
+    [5, 5, 5, 5, 1, 6, 1, 5, 5, 5, 5, 5, 5, 0]
+
+    >>> mancala.terminal_test(state1)
+    False
+    >>> state7 = State(True, [0,0,0,0,0,0,6,4,4,4,4,4,4,10])
+    >>> mancala.terminal_test(state7)
+    True
     """
     def __init__(self):
         self.state = State(True, [4,4,4,4,4,4,0,4,4,4,4,4,4,0])
@@ -87,6 +105,7 @@ class Mancala():
         """Return a list of the allowable moves at this point. A state represents the number of stones in each pit on the board.
 
         """
+        # Different positions depending on the current player
         if(state.isMax):
             moves = [0, 1 , 2 , 3, 4, 5]
         else:
@@ -94,10 +113,11 @@ class Mancala():
 
         result = []
 
+        # if the pit has any marbles, it is a possible move
         for i in range(0,6):
             if(state.pos[moves[i]] != 0):
                 result.append(moves[i])
-
+        # convert min position back to allowable moves between 0-5
         if(not state.isMax):
             for i in range(len(result)):
                 result[i] = result[i]-7
@@ -108,8 +128,7 @@ class Mancala():
         """Return the state that results from making a move from a state. For Mancala, a move is an integer in the range 0 to 5, inclusive.
         >>>
         """
-        mancala = Mancala()
-        if(move in mancala.legal_moves(state)):
+        if(move in self.legal_moves(state)):
 
             #Convert moves to appropriate positions if its the Min players turn
             if(not state.isMax):
@@ -142,15 +161,43 @@ class Mancala():
                     elif(step == state.pos[move]):
                         result.isMax = not(result.isMax)
 
-            #make the number of gems in the initial position = 0
             return result
+        else:
+            return -1
 
-    # def utility(self, state, player):
-    #     "Return the value of this final state to player."
-    #
+
+    def utility(self, state, player):
+        "Return the value of this final state to player."
+        if(self.terminal_test(state)):
+            if(player):
+                moves = [0,1,2,3,4,5,6]
+            else:
+                moves = [7,8,9,10,11,12]
+
+            utility = 0
+
+            #utility is the sum of all the players pits, including their mancala
+            for i in moves:
+                utility = utility + state.pos[i]
+
+            return utility
+
+
+
     def terminal_test(self, state):
         "Return True if this is a final state for the game."
+        final1 = True
+        final2 = True
 
+        for i in range(len(state.pos)):
+            #if any one player has no stones in any one of their pits this is the final_state
+            if(i<6 and state.pos[i] != 0):
+                final1 = False
+            elif(i>6 and i<13 and state.pos[i] != 0):
+                final2 = False
+
+        #either player can have no stones
+        return (final1 or final2)
 
     def to_move(self, state):
         """Return the player whose move it is in this state.
