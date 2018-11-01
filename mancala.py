@@ -16,6 +16,7 @@
 
 import cs210_utils
 import copy
+import io
 
 class State():
     """A node in a search tree. It has a
@@ -97,6 +98,17 @@ class Mancala():
     >>> state7 = State(True, [0,0,0,0,0,0,6,4,4,4,4,4,4,10])
     >>> mancala.terminal_test(state7)
     True
+
+    >>> mancala.utility(state1,1)
+    >>> state8 = State(True, [0,0,0,0,0,0,16,4,3,2,1,0,1,6])
+    >>> mancala.utility(state8,1)
+    16
+    >>> mancala.utility(state8,0)
+    -17
+
+    >>> mancala.display(state1)
+    turn: True
+    board: [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]
     """
     def __init__(self):
         self.state = State(True, [4,4,4,4,4,4,0,4,4,4,4,4,4,0])
@@ -165,14 +177,13 @@ class Mancala():
         else:
             return -1
 
-
     def utility(self, state, player):
         "Return the value of this final state to player."
         if(self.terminal_test(state)):
             if(player):
                 moves = [0,1,2,3,4,5,6]
             else:
-                moves = [7,8,9,10,11,12]
+                moves = [7,8,9,10,11,12,13]
 
             utility = 0
 
@@ -180,9 +191,11 @@ class Mancala():
             for i in moves:
                 utility = utility + state.pos[i]
 
+            #if its the min player make utility negative
+            if(not(player)):
+                utility = -1*utility
+
             return utility
-
-
 
     def terminal_test(self, state):
         "Return True if this is a final state for the game."
@@ -206,9 +219,12 @@ class Mancala():
         0 is Min player
         """
         return state.isMax
-    #
-    # def display(self, state):
-    #     "Print or otherwise display the state."
+
+    def display(self, state):
+        "Print or otherwise display the state."
+        print("turn:", state.isMax)
+        print("board:" , str(state.pos))
+
 
 if __name__ == '__main__':
     cs210_utils.cs210_mainstartup()
